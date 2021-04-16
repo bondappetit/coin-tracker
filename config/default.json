@@ -1,0 +1,10 @@
+{
+  "coin": "BAG",
+  "db": {
+    "file": "./sqllite"
+  },
+  "tg": {
+    "token": "",
+    "groups": ""
+  }
+}

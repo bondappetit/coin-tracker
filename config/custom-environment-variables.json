@@ -1,0 +1,10 @@
+{
+  "coin": "COIN",
+  "db": {
+    "file": "SQLLITE3_FILE"
+  },
+  "tg": {
+    "token": "TG_TOKEN",
+    "groups": "TG_GROUPS"
+  }
+}

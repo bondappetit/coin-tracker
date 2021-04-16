@@ -1,0 +1,37 @@
+{
+  "name": "coin-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf build && tsc && mkdir ./build/telegram/templates/ && cp ./src/telegram/templates/*.mustache ./build/telegram/templates/",
+    "start": "node build/app.js",
+    "start_debug": "node --inspect=0.0.0.0:9229 build/app.js"
+  },
+  "author": "Bond Appetit",
+  "license": "BSD-3",
+  "dependencies": {
+    "@apollo/client": "^3.3.15",
+    "@types/dotenv": "^8.2.0",
+    "config": "^3.3.6",
+    "dotenv": "^8.2.0",
+    "got": "^11.8.2",
+    "knex": "^0.95.4",
+    "mustache": "^4.2.0",
+    "node-telegram-bot-api": "^0.52.0",
+    "sqlite3": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4.1.1",
+    "@types/config": "^0.0.36",
+    "@types/express": "^4.17.8",
+    "@types/node": "^14.10.1",
+    "@types/node-telegram-bot-api": "^0.51.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  },
+  "precommit": [
+    "lint",
+    "test",
+    "build"
+  ]
+}
