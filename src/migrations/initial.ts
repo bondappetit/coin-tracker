@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import {UNISWAP_SWAPS_TABLE, UNISWAP_HOURLY_DATA_TABLE} from '../trackers/uniswap';
 import { COINGECKO_TABLE } from '../trackers/coingecko';
+import { ETHPLORER_TABLE } from "../trackers/ethplorer";
 
 export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTable(COINGECKO_TABLE, table => {
@@ -37,9 +38,17 @@ export async function up(knex: Knex): Promise<void> {
         table.float('txns');
         table.float('totalTxns');
     });
+
+    await knex.schema.createTable(ETHPLORER_TABLE, table => {
+        table.timestamp('timestamp');
+        table.string('contract');
+        table.float('transfersCount');
+        table.float('holdersCount');
+    });
 }
 
 export async function down(knex: Knex): Promise<void> {
+    await knex.schema.dropTable(ETHPLORER_TABLE);
     await knex.schema.dropTable(UNISWAP_HOURLY_DATA_TABLE);
     await knex.schema.dropTable(UNISWAP_SWAPS_TABLE);
     await knex.schema.dropTable(COINGECKO_TABLE);

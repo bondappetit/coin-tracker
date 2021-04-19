@@ -1,5 +1,6 @@
 import { fetchInfo as fetchUniswapInfo } from './trackers/uniswap';
 import { fetchInfo as fetchcoingeckoInfo } from './trackers/coingecko';
+import { fetchInfo as fetchetherscanInfo } from './trackers/ethplorer';
 import { sendHourlyInfo } from './telegram/tg';
 import * as config from 'config';
 import { COINS } from './coins';
@@ -32,6 +33,13 @@ export const startManager = async () => {
             console.log('Info from CoinGecko has been fetched');
         } catch (e) {
             console.error('Error while fetch info from CoinGecko', e);
+        }
+
+        try {
+            await fetchetherscanInfo(coin.contract);
+            console.log('Info from EtherScan has been fetched');
+        } catch (e) {
+            console.error('Error while fetch info from EtherScan', e);
         }
 
         if (Date.now() >= nextTimeToSend) {

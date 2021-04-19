@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as Mustache from 'mustache';
 import * as TelegramBot from 'node-telegram-bot-api';
 import { getActualInfo } from '../trackers/coingecko';
+import { getActualInfo as getEthplorerInfo } from '../trackers/ethplorer';
 import { getAggregatedSwapInfo, getPairDatas } from '../trackers/uniswap';
 import { Coin } from '../coins';
 
@@ -19,9 +20,12 @@ const NumberFormat = Intl.NumberFormat('en-EN');
 
 export const sendHourlyInfo = async (coin: Coin) => {
     const coingeckoInfo = await getActualInfo(coin.contract);
+    const ethplorerData = await getEthplorerInfo(coin.contract);
+
     const uniswapHourlyInfo = await getAggregatedSwapInfo(coin.contract, Date.now() - ONE_HOUR, Date.now());
     const uniswap24hInfo = await getAggregatedSwapInfo(coin.contract, Date.now() - 24 * ONE_HOUR, Date.now());
     const uniswapPairData = await getPairDatas(coin.contract);
+
     await Promise.all(groups.map(async group => bot.sendMessage(group, Mustache.render(HOURLY_INFO_TEMPLATE,
         {
                 coingeckoInfo: {
@@ -56,6 +60,7 @@ export const sendHourlyInfo = async (coin: Coin) => {
                         volumeUSD: NumberFormat.format(data.last24hData.volumeUSD),
                     }
                 })),
+                ethplorerData,
                 symbol: coin.symbol
         },
     ), {
