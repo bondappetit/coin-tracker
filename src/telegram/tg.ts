@@ -2,8 +2,8 @@ import * as config from 'config';
 import * as fs from 'fs';
 import * as Mustache from 'mustache';
 import * as TelegramBot from 'node-telegram-bot-api';
-import { getActualInfo } from '../trackers/coingeco';
-import { getAggregatedInfo } from '../trackers/uniswap';
+import { getActualInfo } from '../trackers/coingecko';
+import { getAggregatedSwapInfo, getPairDatas } from '../trackers/uniswap';
 import { Coin } from '../coins';
 
 const token = config.get<string>('tg.token');
@@ -18,20 +18,46 @@ const HOURLY_INFO_TEMPLATE = fs.readFileSync(`${__dirname}/templates/HourlyInfo.
 const NumberFormat = Intl.NumberFormat('en-EN');
 
 export const sendHourlyInfo = async (coin: Coin) => {
-    const coingecoInfo = await getActualInfo(coin.contract);
-    const uniswapInfo = await getAggregatedInfo(coin.contract, Date.now() - ONE_HOUR, Date.now());
+    const coingeckoInfo = await getActualInfo(coin.contract);
+    const uniswapHourlyInfo = await getAggregatedSwapInfo(coin.contract, Date.now() - ONE_HOUR, Date.now());
+    const uniswap24hInfo = await getAggregatedSwapInfo(coin.contract, Date.now() - 24 * ONE_HOUR, Date.now());
+    const uniswapPairData = await getPairDatas(coin.contract);
     await Promise.all(groups.map(async group => bot.sendMessage(group, Mustache.render(HOURLY_INFO_TEMPLATE,
-        { coingecoInfo: {
-                ...coingecoInfo,
-                usdPrice: NumberFormat.format(coingecoInfo.usdPrice),
-                btcPrice: NumberFormat.format(coingecoInfo.btcPrice),
-                usdVolume: NumberFormat.format(coingecoInfo.usdVolume),
-                btcVolume: NumberFormat.format(coingecoInfo.btcVolume),
-            }, uniswapInfo: {
-                ...uniswapInfo,
-                sellVolume: NumberFormat.format(uniswapInfo.sellVolume),
-                buyVolume: NumberFormat.format(uniswapInfo.buyVolume),
-            }, symbol: coin.symbol },
+        {
+                coingeckoInfo: {
+                    ...coingeckoInfo,
+                    usdPrice: NumberFormat.format(coingeckoInfo.usdPrice),
+                    btcPrice: NumberFormat.format(coingeckoInfo.btcPrice),
+                    usdVolume: NumberFormat.format(coingeckoInfo.usdVolume),
+                    btcVolume: NumberFormat.format(coingeckoInfo.btcVolume),
+                }, uniswapInfo: {
+                    uniswapHourlyInfo: {
+                        ...uniswapHourlyInfo,
+                        sellVolume: NumberFormat.format(uniswapHourlyInfo.sellVolume),
+                        buyVolume: NumberFormat.format(uniswapHourlyInfo.buyVolume),
+                        amountUSD: NumberFormat.format(uniswapHourlyInfo.amountUSD),
+                    },
+                    uniswap24hInfo: {
+                        ...uniswap24hInfo,
+                        sellVolume: NumberFormat.format(uniswap24hInfo.sellVolume),
+                        buyVolume: NumberFormat.format(uniswap24hInfo.buyVolume),
+                        amountUSD: NumberFormat.format(uniswap24hInfo.amountUSD),
+                    }
+                }, uniswapPairData: uniswapPairData.map(data => ({
+                    ...data,
+                    pooledToken0: NumberFormat.format(data.pooledToken0),
+                    pooledToken1: NumberFormat.format(data.pooledToken1),
+                    lastHourData: {
+                        ...data.lastHourData,
+                        volumeUSD: NumberFormat.format(data.lastHourData.volumeUSD),
+                    },
+                    last24hData: {
+                        ...data.last24hData,
+                        volumeUSD: NumberFormat.format(data.last24hData.volumeUSD),
+                    }
+                })),
+                symbol: coin.symbol
+        },
     ), {
         parse_mode: 'HTML',
     })));

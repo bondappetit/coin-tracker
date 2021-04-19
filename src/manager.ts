@@ -1,5 +1,5 @@
 import { fetchInfo as fetchUniswapInfo } from './trackers/uniswap';
-import { fetchInfo as fetchCoingecoInfo } from './trackers/coingeco';
+import { fetchInfo as fetchcoingeckoInfo } from './trackers/coingecko';
 import { sendHourlyInfo } from './telegram/tg';
 import * as config from 'config';
 import { COINS } from './coins';
@@ -24,14 +24,14 @@ export const startManager = async () => {
             await fetchUniswapInfo(coin.contract);
             console.log('Info from UniSwap has been fetched');
         } catch (e) {
-            console.error('Error while fetch info from UniSwap', e.message);
+            console.error('Error while fetch info from UniSwap', e);
         }
 
         try {
-            await fetchCoingecoInfo(coin.contract);
-            console.log('Info from CoinGeco has been fetched');
+            await fetchcoingeckoInfo(coin.contract);
+            console.log('Info from CoinGecko has been fetched');
         } catch (e) {
-            console.error('Error while fetch info from CoinGeco', e.message);
+            console.error('Error while fetch info from CoinGecko', e);
         }
 
         if (Date.now() >= nextTimeToSend) {
@@ -40,7 +40,7 @@ export const startManager = async () => {
                 nextTimeToSend += ONE_HOUR;
                 console.log(`Message has been sent, next message will be send at ${new Date(nextTimeToSend)}`)
             } catch (e) {
-                console.error('Error while send notification', e.message);
+                console.error('Error while send notification', e);
             }
         }
         console.log('Iteration has been finished');

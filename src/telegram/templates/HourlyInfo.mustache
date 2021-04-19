@@ -1,6 +1,28 @@
 Hourly <i>{{symbol}}</i> info ℹ️
 
-<b>Price</b>: {{coingecoInfo.usdPrice}} <i>USD️</i>
-Daily trading <b>volume</b>: {{coingecoInfo.usdVolume}} <i>USD️️</i>
-<b>Bought</b> for the last hour on UniSwap: {{uniswapInfo.buyVolume}} <i>{{symbol}}️️</i>
-<b>Sold</b> for the last hour on UniSwap: {{uniswapInfo.sellVolume}} <i>{{symbol}}️️</i>
+<b>Price</b>: {{coingeckoInfo.usdPrice}} <i>USD️</i>
+
+<b>1 hour info</b>:
+    <b>Bought</b> for the last hour on UniSwap: {{uniswapInfo.uniswapHourlyInfo.buyVolume}} <i>{{symbol}}️️</i>
+    <b>Sold</b> for the last hour on UniSwap: {{uniswapInfo.uniswapHourlyInfo.sellVolume}} <i>{{symbol}}️️</i>
+    <b>Trading volume</b>: {{uniswapInfo.uniswapHourlyInfo.amountUSD}} <i>USD️</i>
+
+<b>24 hours info</b>:
+    <b>Bought</b> for the last hour on UniSwap: {{uniswapInfo.uniswap24hInfo.buyVolume}} <i>{{symbol}}️️</i>
+    <b>Sold</b> for the last hour on UniSwap: {{uniswapInfo.uniswap24hInfo.sellVolume}} <i>{{symbol}}️️</i>
+    <b>Trading volume</b>: {{uniswapInfo.uniswap24hInfo.amountUSD}} <i>USD️</i>
+
+<b>Pool data</b>:
+{{#uniswapPairData}}
+    <i>{{token0Symbol}}/{{token1Symbol}}</i>
+
+        <b>Pooled {{token0Symbol}}</b>: {{pooledToken0}}
+        <b>Pooled {{token1Symbol}}</b>: {{pooledToken1}}
+
+        1 hour <b>trading volume</b>: {{lastHourData.volumeUSD}} <i>USD️</i>
+        24 hours <b>trading volume</b>: {{last24hData.volumeUSD}} <i>USD️</i>
+
+        <b>Total TXs</b>: {{totalTxns}}
+        <b>TXs for the last hour</b>: {{lastHourData.txns}}
+        <b>TXs for the last 24h</b>: {{last24hData.txns}}
+{{/uniswapPairData}}
