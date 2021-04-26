@@ -27,7 +27,7 @@ export async function up(knex: Knex): Promise<void> {
     });
 
     await knex.schema.createTable(UNISWAP_HOURLY_DATA_TABLE, table => {
-        table.timestamp('timestamp').primary();
+        table.timestamp('timestamp');
         table.string('pairId');
         table.string('token0Symbol');
         table.string('token1Symbol');
