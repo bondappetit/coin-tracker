@@ -123,12 +123,16 @@ const addSwaps = async (swaps: Array<UniswapTradeInfo>): Promise<void> => {
     }
 };
 
-const addHourlyDatas = async (hourlyDatas: Array<UniswapPairDataSnapshot>): Promise<void> => {
+const addHourlyDatas = async (hourlyDatas: Array<UniswapPairDataSnapshot>, pairId: string): Promise<void> => {
     if (hourlyDatas.length > 0) {
         const processing = [...hourlyDatas];
         while (processing.length > 0) {
             const bunch = processing.splice(0, 100);
-            await db(UNISWAP_HOURLY_DATA_TABLE).delete().whereIn('timestamp', bunch.map(hourlyData => hourlyData.timestamp));
+            await db(UNISWAP_HOURLY_DATA_TABLE).delete()
+                .whereIn('timestamp', bunch.map(hourlyData => hourlyData.timestamp))
+                .andWhere({
+                    pairId,
+                })
             await db.insert(bunch).into(UNISWAP_HOURLY_DATA_TABLE);
         }
     }
@@ -163,12 +167,11 @@ const fetchSwaps = async (contract: string): Promise<void> => {
 const fetchPairInfo = async (tokenContract: string): Promise<void> => {
     const pairs =  await getPairsByContract(tokenContract);
 
-    const datas: Array<UniswapPairDataSnapshot> = [];
     await Promise.all(pairs.data.pairs.map(async pair => {
         const lastTimestamp = await getLastHourlyDataTimestamp(pair.id);
         const pairHourDatas = await getPairHourlyData(pair.id, lastTimestamp);
 
-        datas.push(...pairHourDatas.data.pairHourDatas.map(pairHourData => ({
+        const houryDatas = pairHourDatas.data.pairHourDatas.map(pairHourData => ({
             timestamp: Number(Number(pairHourData.hourStartUnix) * 1000),
             token0Symbol: pair.token0.symbol,
             token1Symbol: pair.token1.symbol,
@@ -179,10 +182,9 @@ const fetchPairInfo = async (tokenContract: string): Promise<void> => {
             volumeUSD: Number(pairHourData.hourlyVolumeUSD),
             txns: Number(pairHourData.hourlyTxns),
             totalTxns: Number(pair.txCount),
-        })));
+        }));
+        await addHourlyDatas(houryDatas, pair.id);
     }));
-
-    await addHourlyDatas(datas);
 }
 
 export const fetchInfo = async (tokenContract: string): Promise<void> => {
