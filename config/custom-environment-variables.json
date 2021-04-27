@@ -1,5 +1,6 @@
 {
   "coin": "COIN",
+  "pollingInterval": "POLLING_INTERVAL",
   "db": {
     "file": "SQLLITE3_FILE"
   },
