@@ -1,5 +1,6 @@
 {
   "coin": "BAG",
+  "pollingInterval": "120000",
   "db": {
     "file": "./sqllite"
   },
