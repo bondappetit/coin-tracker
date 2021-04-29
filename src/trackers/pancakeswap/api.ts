@@ -45,7 +45,7 @@ export interface PairHourlData {
     hourlyVolumeUSD: string;
 }
 
-const BASE_URL = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2';
+const BASE_URL = 'https://api.thegraph.com/subgraphs/name/pancakeswap/exchange';
 
 export const getPairsByContract = async (contract: string) => (await got.post({
     responseType: 'json',

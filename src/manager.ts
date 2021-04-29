@@ -1,4 +1,5 @@
 import { fetchInfo as fetchUniswapInfo } from './trackers/uniswap';
+import { fetchInfo as fetchPancakeInfo } from './trackers/pancakeswap';
 import { fetchInfo as fetchcoingeckoInfo } from './trackers/coingecko';
 import { fetchInfo as fetchethplorerInfo } from './trackers/ethplorer';
 import { sendHourlyInfo } from './telegram/tg';
@@ -26,6 +27,15 @@ export const startManager = async () => {
             console.log('Info from UniSwap has been fetched');
         } catch (e) {
             console.error('Error while fetch info from UniSwap', e);
+        }
+
+        if (coin.bscContract) {
+            try {
+                await fetchPancakeInfo(coin.bscContract);
+                console.log('Info from PancakeSwap has been fetched');
+            } catch (e) {
+                console.error('Error while fetch info from PancakeSwap', e);
+            }
         }
 
         try {

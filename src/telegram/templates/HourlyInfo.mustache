@@ -1,12 +1,13 @@
 <b>Price</b>: {{coingeckoInfo.usdPrice}} <i>USD️</i>
 <b>Total holders</b>: {{ethplorerData.holdersCount}}
 <b>Total transfers</b>: {{ethplorerData.transfersCount}}
+<b>UniSwap</b>
 <b>1 hour info</b>:
-  <b>bought</b>/<b>sold</b>: {{uniswapInfo.uniswapHourlyInfo.buyVolume}} / {{uniswapInfo.uniswapHourlyInfo.sellVolume}} <i>{{symbol}}️️</i>
-  Trading <b>volume</b>: {{uniswapInfo.uniswapHourlyInfo.amountUSD}} <i>USD️</i>
+  <b>bought</b>/<b>sold</b>: {{uniswapInfo.hourlyInfo.buyVolume}} / {{uniswapInfo.hourlyInfo.sellVolume}} <i>{{symbol}}️️</i>
+  Trading <b>volume</b>: {{uniswapInfo.hourlyInfo.amountUSD}} <i>USD️</i>
 <b>24 hours info</b>:
-  <b>Bought</b>/<b>sold</b>: {{uniswapInfo.uniswap24hInfo.buyVolume}} / {{uniswapInfo.uniswap24hInfo.sellVolume}} <i>{{symbol}}️️</i>
-  Trading <b>volume</b>: {{uniswapInfo.uniswap24hInfo.amountUSD}} <i>USD️</i>
+  <b>Bought</b>/<b>sold</b>: {{uniswapInfo.info24h.buyVolume}} / {{uniswapInfo.info24h.sellVolume}} <i>{{symbol}}️️</i>
+  Trading <b>volume</b>: {{uniswapInfo.info24h.amountUSD}} <i>USD️</i>
 <b>Pool data</b>:
 {{#uniswapPairData}}
   <i>{{token0Symbol}}/{{token1Symbol}}</i>
@@ -15,3 +16,18 @@
     Total <b>TXs</b>: {{totalTxns}}
     <b>TXs</b> for the last 1h/24h: {{lastHourData.txns}} / {{last24hData.txns}}
 {{/uniswapPairData}}
+<b>PancakeSwap</b>
+<b>1 hour info</b>:
+<b>bought</b>/<b>sold</b>: {{pancakeswapInfo.hourlyInfo.buyVolume}} / {{pancakeswapInfo.hourlyInfo.sellVolume}} <i>{{symbol}}️️</i>
+Trading <b>volume</b>: {{pancakeswapInfo.hourlyInfo.amountUSD}} <i>USD️</i>
+<b>24 hours info</b>:
+<b>Bought</b>/<b>sold</b>: {{pancakeswapInfo.info24h.buyVolume}} / {{pancakeswapInfo.info24h.sellVolume}} <i>{{symbol}}️️</i>
+Trading <b>volume</b>: {{pancakeswapInfo.info24h.amountUSD}} <i>USD️</i>
+<b>Pool data</b>:
+{{#pancakeswapPairData}}
+    <i>{{token0Symbol}}/{{token1Symbol}}</i>
+    <b>Pooled</b> {{token0Symbol}} / {{token1Symbol}}: {{pooledToken0}} / {{pooledToken1}}
+    1h/24h trading <b>volume</b>: {{lastHourData.volumeUSD}} / {{last24hData.volumeUSD}} <i>USD️</i>
+    Total <b>TXs</b>: {{totalTxns}}
+    <b>TXs</b> for the last 1h/24h: {{lastHourData.txns}} / {{last24hData.txns}}
+{{/pancakeswapPairData}}
