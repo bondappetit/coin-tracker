@@ -5,6 +5,7 @@ import * as TelegramBot from 'node-telegram-bot-api';
 import { getActualInfo } from '../trackers/coingecko';
 import { getActualInfo as getEthplorerInfo } from '../trackers/ethplorer';
 import { getAggregatedSwapInfo, getPairDatas } from '../trackers/uniswap';
+import { getAggregatedSwapInfo as getCakeAggregatedSwapInfo, getPairDatas as getCakePairDatas } from '../trackers/pancakeswap';
 import { Coin } from '../coins';
 
 const token = config.get<string>('tg.token');
@@ -25,6 +26,11 @@ export const sendHourlyInfo = async (coin: Coin) => {
     const uniswapHourlyInfo = await getAggregatedSwapInfo(coin.contract, Date.now() - ONE_HOUR, Date.now());
     const uniswap24hInfo = await getAggregatedSwapInfo(coin.contract, Date.now() - 24 * ONE_HOUR, Date.now());
     const uniswapPairData = await getPairDatas(coin.contract);
+
+    const pancakeswapHourlyInfo = await getCakeAggregatedSwapInfo(coin.bscContract || "", Date.now() - ONE_HOUR, Date.now());
+    const pancakeswap24hInfo = await getCakeAggregatedSwapInfo(coin.bscContract || "", Date.now() - 24 * ONE_HOUR, Date.now());
+    const pancakeswapPairData = await getCakePairDatas(coin.bscContract || "");
+
 
     await Promise.all(groups.map(async group => bot.sendMessage(group, Mustache.render(HOURLY_INFO_TEMPLATE,
         {
@@ -59,7 +65,32 @@ export const sendHourlyInfo = async (coin: Coin) => {
                         ...data.last24hData,
                         volumeUSD: NumberFormat.format(data.last24hData.volumeUSD),
                     }
-                })),
+                })), pancakeswapInfo: {
+                    hourlyInfo: {
+                        ...pancakeswapHourlyInfo,
+                        sellVolume: NumberFormat.format(pancakeswapHourlyInfo.sellVolume),
+                        buyVolume: NumberFormat.format(pancakeswapHourlyInfo.buyVolume),
+                        amountUSD: NumberFormat.format(pancakeswapHourlyInfo.amountUSD),
+                    },
+                    info24h: {
+                        ...pancakeswap24hInfo,
+                        sellVolume: NumberFormat.format(pancakeswap24hInfo.sellVolume),
+                        buyVolume: NumberFormat.format(pancakeswap24hInfo.buyVolume),
+                        amountUSD: NumberFormat.format(pancakeswap24hInfo.amountUSD),
+                    }
+                }, pancakeswapPairData: pancakeswapPairData.map(data => ({
+                    ...data,
+                    pooledToken0: NumberFormat.format(data.pooledToken0),
+                    pooledToken1: NumberFormat.format(data.pooledToken1),
+                    lastHourData: {
+                        ...data.lastHourData,
+                        volumeUSD: NumberFormat.format(data.lastHourData.volumeUSD),
+                    },
+                    last24hData: {
+                        ...data.last24hData,
+                        volumeUSD: NumberFormat.format(data.last24hData.volumeUSD),
+                    }
+            })),
                 ethplorerData,
                 symbol: coin.symbol
         },
