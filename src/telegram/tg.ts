@@ -41,13 +41,13 @@ export const sendHourlyInfo = async (coin: Coin) => {
                     usdVolume: NumberFormat.format(coingeckoInfo.usdVolume),
                     btcVolume: NumberFormat.format(coingeckoInfo.btcVolume),
                 }, uniswapInfo: {
-                    uniswapHourlyInfo: {
+                    hourlyInfo: {
                         ...uniswapHourlyInfo,
                         sellVolume: NumberFormat.format(uniswapHourlyInfo.sellVolume),
                         buyVolume: NumberFormat.format(uniswapHourlyInfo.buyVolume),
                         amountUSD: NumberFormat.format(uniswapHourlyInfo.amountUSD),
                     },
-                    uniswap24hInfo: {
+                    info24h: {
                         ...uniswap24hInfo,
                         sellVolume: NumberFormat.format(uniswap24hInfo.sellVolume),
                         buyVolume: NumberFormat.format(uniswap24hInfo.buyVolume),

@@ -43,6 +43,10 @@ export interface PairHourlData {
     hourlyVolumeToken0: string;
     hourlyVolumeToken1: string;
     hourlyVolumeUSD: string;
+    pair: {
+        token0: Token;
+        token1: Token;
+    }
 }
 
 const BASE_URL = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2';
@@ -112,31 +116,56 @@ export const getLastSwaps = async (pairId: string, lastTimestamp: number) => (aw
     };
 };
 
-export const getPairHourlyData = async (pairId: string, lastTimestamp: number) => (await got.post({
-    responseType: 'json',
-    url: BASE_URL,
-    body: JSON.stringify({
-        query: `
-            query($pairId: String, $lastTimestamp: Int) {
-                 pairHourDatas(first: 24, orderBy: hourStartUnix, orderDirection: desc,
-                   where: { pair: $pairId, hourStartUnix_gte: $lastTimestamp }
-                 ) {
-                    id
-                    hourStartUnix
-                    hourlyTxns
-                    reserve0
-                    reserve1
-                    reserveUSD
-                    hourlyVolumeToken0
-                    hourlyVolumeToken1
-                    hourlyVolumeUSD
-                 }
-            }
-            `,
-        variables: { pairId, lastTimestamp: Math.floor(lastTimestamp / 1000) },
-    }),
-})).body as {
-    data: {
-        pairHourDatas: Array<PairHourlData>;
+export const getPairHourlyData = async (pairId: string, lastTimestamp: number) => {
+    const res = (await got.post({
+        responseType: 'json',
+        url: BASE_URL,
+        body: JSON.stringify({
+            query: `
+                query($pairId: String, $lastTimestamp: Int) {
+                     pairHourDatas(first: 24, orderBy: hourStartUnix, orderDirection: desc,
+                       where: { pair: $pairId, hourStartUnix_gte: $lastTimestamp }
+                     ) {
+                        id
+                        hourStartUnix
+                        hourlyTxns
+                        reserve0
+                        reserve1
+                        reserveUSD
+                        hourlyVolumeToken0
+                        hourlyVolumeToken1
+                        hourlyVolumeUSD
+                        pair {
+                           token0 {
+                             id
+                             symbol
+                             name
+                           }
+                           token1 {
+                             id
+                             symbol
+                             name
+                           }
+                        }
+                     }
+                }
+                `,
+            variables: { pairId, lastTimestamp: Math.floor(lastTimestamp / 1000) },
+        }),
+    })).body as {
+        data: {
+            pairHourDatas: Array<PairHourlData>;
+        };
     };
-};
+
+    res.data.pairHourDatas.forEach(data => {
+        // Проблема на стороне API
+        if (Number(data.hourlyVolumeUSD) === 0 && Number(data.hourlyVolumeToken1) > 0 && data.pair.token1.symbol.indexOf("USD") > -1) {
+            data.hourlyVolumeUSD = data.hourlyVolumeToken1;
+        } else {
+            debugger;
+        }
+    });
+
+    return res;
+}
