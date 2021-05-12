@@ -162,8 +162,6 @@ export const getPairHourlyData = async (pairId: string, lastTimestamp: number) =
         // Проблема на стороне API
         if (Number(data.hourlyVolumeUSD) === 0 && Number(data.hourlyVolumeToken1) > 0 && data.pair.token1.symbol.indexOf("USD") > -1) {
             data.hourlyVolumeUSD = data.hourlyVolumeToken1;
-        } else {
-            debugger;
         }
     });
 
