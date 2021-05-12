@@ -69,6 +69,18 @@ export const getPairDatas= async (tokenContract: string): Promise<Array<UniswapP
         tokenContract,
     }).orderBy('timestamp', 'desc').select().from(UNISWAP_HOURLY_DATA_TABLE));
 
+    if (data.length === 0) {
+        const lastRow: UniswapPairDataSnapshot = (await db.where({
+            tokenContract,
+        }).orderBy('timestamp', 'desc').first().select().from(UNISWAP_HOURLY_DATA_TABLE));
+
+        if (lastRow) {
+            lastRow.txns = 0;
+            lastRow.volumeUSD = 0;
+            data.push(lastRow);
+        }
+    }
+
     const result: Record<string, UniswapPairData> = {};
     data.map(row => {
         if (!result[row.pairId]) {
