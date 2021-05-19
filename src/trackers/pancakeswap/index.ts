@@ -1,5 +1,6 @@
 import { db } from '../../db/db';
 import {getLastSwaps, getPairHourlyData, getPairsByContract} from "./api";
+import {getBcPairInfo} from "./bc/api";
 
 // Не является дублированием кода, Uni и Cake - разные биржи и они развиваются независимо, гарантий они не дают на совместимость
 
@@ -184,6 +185,24 @@ const fetchPairInfo = async (tokenContract: string): Promise<void> => {
     await Promise.all(pairs.data.pairs.map(async pair => {
         const lastTimestamp = await getLastHourlyDataTimestamp(pair.id);
         const pairHourDatas = await getPairHourlyData(pair.id, lastTimestamp);
+
+        const lastInfo = pairHourDatas.data.pairHourDatas[0];
+        if (!lastInfo || (Number(lastInfo.hourStartUnix) * 1000) < (Date.now() - 2 * 1000 * 60 * 60)) {
+            const bcData = await getBcPairInfo(pair.id);
+            const data =  [{
+                ...bcData,
+                timestamp: Date.now(),
+                token0Symbol: pair.token0.symbol,
+                token1Symbol: pair.token1.symbol,
+                pairId: pair.id,
+                tokenContract: tokenContract,
+                volumeUSD: 0,
+                txns: 0,
+                totalTxns: Number(pair.txCount),
+            }];
+
+            await addHourlyDatas(data, pair.id);
+        }
 
         const houryDatas = pairHourDatas.data.pairHourDatas.map(pairHourData => ({
             timestamp: Number(Number(pairHourData.hourStartUnix) * 1000),
