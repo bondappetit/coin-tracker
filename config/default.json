@@ -1,6 +1,9 @@
 {
   "coin": "BAG",
   "pollingInterval": "120000",
+  "pancakeswap": {
+    "briefly": "1"
+  },
   "db": {
     "file": "./sqllite"
   },

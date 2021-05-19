@@ -66,6 +66,7 @@ export const sendHourlyInfo = async (coin: Coin) => {
                         volumeUSD: NumberFormat.format(data.last24hData.volumeUSD),
                     }
                 })), pancakeswapInfo: {
+                    briefly: Number(config.get("pancakeswap.briefly")) === 1,
                     hourlyInfo: {
                         ...pancakeswapHourlyInfo,
                         sellVolume: NumberFormat.format(pancakeswapHourlyInfo.sellVolume),
