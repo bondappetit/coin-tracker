@@ -1,6 +1,9 @@
 {
   "coin": "COIN",
   "pollingInterval": "POLLING_INTERVAL",
+  "pancakeswap": {
+    "briefly": "BRIEFLY_PANCAKESWAP_INFO"
+  },
   "db": {
     "file": "SQLLITE3_FILE"
   },
