@@ -19,7 +19,6 @@ currentDate.setHours(currentDate.getHours( ) + 1, 0, 0, 0);
 let nextTimeToSend = currentDate.valueOf();
 
 export const startManager = async () => {
-    await sendHourlyInfo(coin);
     const runCycle = async () => {
         console.log('Start iteration');
         try {
@@ -65,4 +64,5 @@ export const startManager = async () => {
         setTimeout(runCycle, POLLING_INTERVAL);
     };
     await runCycle();
+    await sendHourlyInfo(coin);
 };

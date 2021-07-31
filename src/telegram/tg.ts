@@ -91,9 +91,11 @@ export const sendHourlyInfo = async (coin: Coin) => {
                         ...data.last24hData,
                         volumeUSD: NumberFormat.format(data.last24hData.volumeUSD),
                     }
-            })),
+                })),
                 ethplorerData,
-                symbol: coin.symbol
+                symbol: coin.symbol,
+                ethereum: coin.contract !== undefined,
+                bsc: coin.bscContract !== undefined,
         },
     ), {
         parse_mode: 'HTML',
