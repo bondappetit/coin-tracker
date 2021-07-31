@@ -1,5 +1,5 @@
 {
-  "coin": "COIN",
+  "coins": "COINS",
   "pollingInterval": "POLLING_INTERVAL",
   "pancakeswap": {
     "briefly": "BRIEFLY_PANCAKESWAP_INFO"

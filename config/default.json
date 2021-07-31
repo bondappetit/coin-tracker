@@ -1,5 +1,5 @@
 {
-  "coin": "BAG",
+  "coins": "BAG,USDap",
   "pollingInterval": "120000",
   "pancakeswap": {
     "briefly": "1"
