@@ -1,6 +1,7 @@
-<b>Price</b>: {{coingeckoInfo.usdPrice}} <i>USD️</i>
+<b>{{symbol}} price</b>: {{coingeckoInfo.usdPrice}} <i>USD️</i>
 <b>Total holders</b>: {{ethplorerData.holdersCount}}
 <b>Total transfers</b>: {{ethplorerData.transfersCount}}
+{{#ethereum}}
 <b>UniSwap</b>
 <b>1 hour info</b>:
   <b>bought</b>/<b>sold</b>: {{uniswapInfo.hourlyInfo.buyVolume}} / {{uniswapInfo.hourlyInfo.sellVolume}} <i>{{symbol}}️️</i>
@@ -16,6 +17,8 @@
     Total <b>TXs</b>: {{totalTxns}}
     <b>TXs</b> for the last 1h/24h: {{lastHourData.txns}} / {{last24hData.txns}}
 {{/uniswapPairData}}
+{{/ethereum}}
+{{#bsc}}
 <b>PancakeSwap</b>
 {{^pancakeswapInfo.briefly}}
 <b>1 hour info</b>:
@@ -35,3 +38,4 @@ Trading <b>volume</b>: {{pancakeswapInfo.info24h.amountUSD}} <i>USD️</i>
     <b>TXs</b> for the last 1h/24h: {{lastHourData.txns}} / {{last24hData.txns}}
     {{/pancakeswapInfo.briefly}}
 {{/pancakeswapPairData}}
+{{/bsc}}

@@ -72,7 +72,7 @@ export const getPairsByContract = async (contract: string) => (await got.post({
              }
            }
           `,
-        variables: { token0Id: contract },
+        variables: { token0Id: contract.toLowerCase() },
     }),
 })).body as {
     data: {
@@ -104,7 +104,7 @@ export const getLastSwaps = async (pairId: string, lastTimestamp: number) => (aw
                  }
                 }
             `,
-        variables: { pairId, lastTimestamp: Math.floor(lastTimestamp / 1000) },
+        variables: { pairId: pairId.toLowerCase(), lastTimestamp: Math.floor(lastTimestamp / 1000) },
     }),
 })).body as {
     data: {
@@ -133,7 +133,7 @@ export const getPairHourlyData = async (pairId: string, lastTimestamp: number) =
                  }
             }
             `,
-        variables: { pairId, lastTimestamp: Math.floor(lastTimestamp / 1000) },
+        variables: { pairId: pairId.toLowerCase(), lastTimestamp: Math.floor(lastTimestamp / 1000) },
     }),
 })).body as {
     data: {
